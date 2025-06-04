@@ -21,10 +21,10 @@ WITH RECURSIVE base_level(employee_id, employee_name, manager_id, salary, manage
     WHERE e.manager_id = b.employee_id
 )
 ,
-unnested_team AS (
+unnested_team AS ( -- rows are by employee_id, unnest explodes all higher ups
     SELECT unnest(managers) AS manager_id__unnested,
         SUM(salary) AS budget,
-        COUNT(salary) - 1 AS team_size -- "team" does not include self
+        COUNT(employee_id) - 1 AS team_size -- "team" does not include self
     FROM base_level
     GROUP BY 1
 )
